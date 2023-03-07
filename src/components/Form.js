@@ -34,7 +34,7 @@ function FormComponent() {
 *\d{1,5}\s\w.\s(\b\w*\b\s){1,2}\w*\.
 *This allows 1-5 digits for the house number, a space, 
 a character followed by a period (for N. or S.), 
-1-2 words for the street name, 
+1-4 words for the street name, 
 finished with an abbreviation (like st. or rd.). 
  */
   let validAdress = /\d{1,5}\s\w.\s?(\b\w*\b\s){1,4}\w*\./gi;
