@@ -50,11 +50,14 @@ finished with an abbreviation (like st. or rd.).
     } else if (values.pieces <= 0) {
       errors.pieces = "Number must be greater than 0.";
     }
+
     if (!values.phone) {
       errors.phone = "Phone number is required.";
-    } else if (!values.phone.length === 15 || !/\d{15}/.test(values.phone)) {
-      errors.phone = "Phone number must be 15 digits minimum";
+    } else if (!/^[0-9]{15,}$/g.test(values.phone)) {
+      errors.phone =
+        "Phone number must include digits only and must be 15 digits minimum";
     }
+
     if (!isToday(values.date)) {
       errors.date = "Enter a valide date.";
     }
