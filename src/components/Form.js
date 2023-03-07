@@ -1,23 +1,10 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
-import { useState } from "react";
+import Cart from "./Cart";
+import * as Yup from "yup";
 
 function FormComponent() {
-  let product = {
-    name: "T-shirt",
-    price: 122,
-    tax: 10,
-    pieces: 1,
-  };
-
-  const [totalCost, setTotalCost] = useState(
-    (product.tax / 100) * product.price * product.pieces + product.price
-  );
-  const [salesAmount, setSalesAmount] = useState(
-    product.price * product.pieces
-  );
-
   let user = {
     name: "User",
     email: "email@gmail.com",
@@ -39,58 +26,33 @@ function FormComponent() {
     );
   }
 
-  /**
-*\d{1,5}\s\w.\s(\b\w*\b\s){1,2}\w*\.
-*This allows 1-5 digits for the house number, a space, 
-a character followed by a period (for N. or S.), 
-1-4 words for the street name, 
-finished with an abbreviation (like st. or rd.). 
- */
-  let validAdress = /\d{1,5}\s\w.\s?(\b\w*\b\s){1,4}\w*\./gi;
-
-  const validate = (values) => {
-    let errors = {};
-    if (!values.adress) {
-      errors.adress = "Adress is required.";
-    } else if (!validAdress.test(values.adress)) {
-      errors.adress = "Follow the example :  253 N. Cherry St.";
-    }
-    if (!values.pieces) {
-      errors.pieces = "Number of pieces is required.";
-    } else if (values.pieces <= 0) {
-      errors.pieces = "Number must be greater than 0.";
-    }
-
-    if (!values.phone) {
-      errors.phone = "Phone number is required.";
-    } else if (!/^[0-9]{15,}$/g.test(values.phone)) {
-      errors.phone =
-        "Phone number must include digits only and must be 15 digits minimum";
-    }
-
-    if (!isToday(values.date)) {
-      errors.date = "Enter a valide date.";
-    }
-    return errors;
-  };
-
   const formik = useFormik({
     initialValues: {
       userName: user.name,
       email: user.email,
-      phone: "",
-      product: product.name,
-      pieces: 1,
-      price: product.price,
-      tax: product.tax,
-      salesAmount: salesAmount,
-      totalAfterTax: totalCost,
+      phone: 0,
       adress: "",
       date: `${year}-${month >= 10 ? month : `0${month}`}-${
         day >= 10 ? day : `0${day}`
       }`,
     },
-    validate,
+    validationSchema: Yup.object({
+      adress: Yup.string().label("253 N. Cherry St.").required(),
+      phone: Yup.number().test(
+        "phone-number",
+        "Phone number must include digits only and must be 15 digits minimum",
+        function (phone) {
+          return /^[0-9]{15,}$/g.test(phone);
+        }
+      ),
+      date: Yup.string().test(
+        "date-is-valide",
+        "Enter a valid date",
+        function (date) {
+          return isToday(date);
+        }
+      ),
+    }),
 
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
@@ -98,7 +60,7 @@ finished with an abbreviation (like st. or rd.).
   });
 
   return (
-    <Form className="w-50 mx-auto my-2 p-4" onSubmit={formik.handleSubmit}>
+    <Form className="w-75 mx-auto my-2 p-4" onSubmit={formik.handleSubmit}>
       <Form.Group className="mb-3" controlId="userName">
         <Form.Label>User name</Form.Label>
         <Form.Control
@@ -117,11 +79,11 @@ finished with an abbreviation (like st. or rd.).
           onChange={formik.handleChange}
           value={formik.values.phone}
         />
-        {formik.errors.phone ? (
+        {formik.errors.phone && (
           <div className="text-danger fs-5 text-start">
             {formik.errors.phone}
           </div>
-        ) : null}
+        )}
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
@@ -143,11 +105,11 @@ finished with an abbreviation (like st. or rd.).
           onChange={formik.handleChange}
           value={formik.values.date}
         />
-        {formik.errors.date ? (
+        {formik.errors.date && (
           <div className="text-danger fs-5 text-start">
             {formik.errors.date}
           </div>
-        ) : null}
+        )}
       </Form.Group>
       <Form.Group className="mb-3" controlId="adress">
         <Form.Label>Address</Form.Label>
@@ -158,73 +120,14 @@ finished with an abbreviation (like st. or rd.).
           onChange={formik.handleChange}
           value={formik.values.adress}
         />
-        {formik.errors.adress ? (
+        {formik.errors.adress && (
           <div className="text-danger fs-5 text-start">
             {formik.errors.adress}
           </div>
-        ) : null}
+        )}
       </Form.Group>
-      <Form.Group className="mb-3" controlId="product">
-        <Form.Label>Product</Form.Label>
-        <Form.Control
-          type="text"
-          value={formik.values.product}
-          disabled
-          name="product"
-        />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="pieces">
-        <Form.Label>Pieces</Form.Label>
-        <Form.Control
-          type="number"
-          name="pieces"
-          placeholder="ex. 3"
-          value={formik.values.pieces}
-          onChange={(e) => {
-            setSalesAmount(formik.values.price * e.target.value);
-            setTotalCost(
-              (formik.values.tax / 100) * formik.values.price * e.target.value +
-              formik.values.price * e.target.value
-              );
-              formik.handleChange(e);
-          }}
-        />
-        {formik.errors.pieces ? (
-          <div className="text-danger fs-5 text-start">
-            {formik.errors.pieces}
-          </div>
-        ) : null}
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="price">
-        <Form.Label>Price</Form.Label>
-        <Form.Control type="text" value={`${formik.values.price} $`} disabled />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="salesAmount">
-        <Form.Label>Sales amount</Form.Label>
-        <Form.Control
-          type="text"
-          value={`${formik.values.price * formik.values.pieces} $`}
-          disabled
-        />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="tax">
-        <Form.Label>Tax</Form.Label>
-        <Form.Control type="text" value={formik.values.tax} disabled />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="totalAfterTax">
-        <Form.Label>Total After Tax</Form.Label>
-        <Form.Control
-          type="text"
-          value={`${
-            (formik.values.tax / 100) *
-              formik.values.price *
-              formik.values.pieces +
-            formik.values.price * formik.values.pieces
-          } $`}
-          disabled
-        />
-      </Form.Group>
-
+      <p className="fs-4 ">Products</p>
+      <Cart />
       <Button variant="primary" type="submit">
         Submit
       </Button>

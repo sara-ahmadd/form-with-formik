@@ -23,4 +23,5 @@ npm run start
 ### Technologies used :
 
 - Bootstrap & React-bootstrap : for react components styling.
-- Formik : for validating and managing values of the form fields.
+- Formik : for managing values of the form fields.
+- Yup : for validating values of form.
