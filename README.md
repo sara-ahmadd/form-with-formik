@@ -2,7 +2,9 @@
 
 - Form containing :
   - data about the user (fetched dynamically from the login information of the user on the website), which are the user name and email.
-  - data about the product including : _ price ,tax : fetched dynamically from the website. _ pieces : entered by the user.
+  - data about the product including :
+    ** price ,tax : fetched dynamically from the website.**
+    **pieces : entered by the user.**
 
 ## Built with create-react-app
 
