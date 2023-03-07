@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
+import { useState } from "react";
 
 function FormComponent() {
   let product = {
@@ -9,6 +10,14 @@ function FormComponent() {
     tax: 10,
     pieces: 1,
   };
+
+  const [totalCost, setTotalCost] = useState(
+    (product.tax / 100) * product.price + product.price
+  );
+  const [salesAmount, setSalesAmount] = useState(
+    product.price * product.pieces
+  );
+
   let user = {
     name: "User",
     email: "email@gmail.com",
@@ -74,14 +83,15 @@ finished with an abbreviation (like st. or rd.).
       pieces: 1,
       price: product.price,
       tax: product.tax,
-      salesAmount: product.price * product.pieces,
-      totalAfterTax: (product.tax / 100) * product.price + product.price,
+      salesAmount: salesAmount,
+      totalAfterTax: totalCost,
       adress: "",
       date: `${year}-${month >= 10 ? month : `0${month}`}-${
         day >= 10 ? day : `0${day}`
       }`,
     },
     validate,
+
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
     },
@@ -186,7 +196,7 @@ finished with an abbreviation (like st. or rd.).
         <Form.Label>Sales amount</Form.Label>
         <Form.Control
           type="text"
-          value={`${formik.values.salesAmount} $`}
+          value={`${formik.values.price * formik.values.pieces} $`}
           disabled
         />
       </Form.Group>
@@ -198,8 +208,12 @@ finished with an abbreviation (like st. or rd.).
         <Form.Label>Total After Tax</Form.Label>
         <Form.Control
           type="text"
-          name="totalAfterTax"
-          value={formik.values.totalAfterTax}
+          value={`${
+            (formik.values.tax / 100) *
+              formik.values.price *
+              formik.values.pieces +
+            formik.values.price * formik.values.pieces
+          } $`}
           disabled
         />
       </Form.Group>
