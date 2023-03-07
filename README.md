@@ -1,6 +1,6 @@
 # Checkout form
 
-- Form containing :
+- A form containing :
   - data about the user (fetched dynamically from the login information of the user on the website), which are the user name and email.
   - data about the product including :
     **[price ,tax] : fetched dynamically from the website.**
