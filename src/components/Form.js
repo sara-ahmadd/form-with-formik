@@ -53,7 +53,7 @@ finished with an abbreviation (like st. or rd.).
     if (!values.phone) {
       errors.phone = "Phone number is required.";
     } else if (!values.phone.length === 15 || !/\d{15}/.test(values.phone)) {
-      errors.phone = "Phone number must be 15 characters minimum";
+      errors.phone = "Phone number must be 15 digits minimum";
     }
     if (!isToday(values.date)) {
       errors.date = "Enter a valide date.";
@@ -63,8 +63,13 @@ finished with an abbreviation (like st. or rd.).
 
   const formik = useFormik({
     initialValues: {
+      userName: user.name,
+      email: user.email,
       phone: "",
+      product: product.name,
       pieces: 1,
+      price: product.price,
+      tax: product.tax,
       adress: "",
       date: `${year}-${month >= 10 ? month : `0${month}`}-${
         day >= 10 ? day : `0${day}`
@@ -80,7 +85,12 @@ finished with an abbreviation (like st. or rd.).
     <Form className="w-50 mx-auto my-2 p-4" onSubmit={formik.handleSubmit}>
       <Form.Group className="mb-3" controlId="userName">
         <Form.Label>User name</Form.Label>
-        <Form.Control type="text" disabled value={user.name} name="userName" />
+        <Form.Control
+          type="text"
+          disabled
+          value={formik.values.userName}
+          name="userName"
+        />
       </Form.Group>
       <Form.Group className="mb-3" controlId="phone">
         <Form.Label>Phone number</Form.Label>
@@ -99,7 +109,12 @@ finished with an abbreviation (like st. or rd.).
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" disabled value={user.email} name="email" />
+        <Form.Control
+          type="email"
+          disabled
+          value={formik.values.email}
+          name="email"
+        />
         <Form.Text className="text-muted">
           We'll never share your email with anyone else.
         </Form.Text>
@@ -137,7 +152,7 @@ finished with an abbreviation (like st. or rd.).
         <Form.Label>Product</Form.Label>
         <Form.Control
           type="text"
-          value={product.name}
+          value={formik.values.product}
           disabled
           name="product"
         />
@@ -152,7 +167,9 @@ finished with an abbreviation (like st. or rd.).
           value={formik.values.pieces}
         />
         {formik.errors.pieces ? (
-          <div className="text-danger">{formik.errors.pieces}</div>
+          <div className="text-danger fs-5 text-start">
+            {formik.errors.pieces}
+          </div>
         ) : null}
       </Form.Group>
       <Form.Group className="mb-3" controlId="price">
@@ -163,21 +180,21 @@ finished with an abbreviation (like st. or rd.).
         <Form.Label>Sales amount</Form.Label>
         <Form.Control
           type="text"
-          value={`${product.price * formik.values.pieces} $`}
+          value={`${formik.values.price * formik.values.pieces} $`}
           disabled
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="tax">
         <Form.Label>Tax</Form.Label>
-        <Form.Control type="text" value={product.tax} disabled />
+        <Form.Control type="text" value={formik.values.tax} disabled />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Total After Tax</Form.Label>
         <Form.Control
           type="text"
           value={`${
-            product.price * formik.values.pieces +
-            product.price * formik.values.pieces * (10 / 100)
+            formik.values.price * formik.values.pieces +
+            formik.values.price * formik.values.pieces * (10 / 100)
           } $`}
           disabled
         />
