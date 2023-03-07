@@ -6,7 +6,8 @@ function FormComponent() {
   let product = {
     name: "T-shirt",
     price: 122,
-    tax: "10%",
+    tax: 10,
+    pieces: 1,
   };
   let user = {
     name: "User",
@@ -73,6 +74,8 @@ finished with an abbreviation (like st. or rd.).
       pieces: 1,
       price: product.price,
       tax: product.tax,
+      salesAmount: product.price * product.pieces,
+      totalAfterTax: (product.tax / 100) * product.price + product.price,
       adress: "",
       date: `${year}-${month >= 10 ? month : `0${month}`}-${
         day >= 10 ? day : `0${day}`
@@ -160,7 +163,7 @@ finished with an abbreviation (like st. or rd.).
           name="product"
         />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicPassword">
+      <Form.Group className="mb-3" controlId="pieces">
         <Form.Label>Pieces</Form.Label>
         <Form.Control
           type="number"
@@ -177,13 +180,13 @@ finished with an abbreviation (like st. or rd.).
       </Form.Group>
       <Form.Group className="mb-3" controlId="price">
         <Form.Label>Price</Form.Label>
-        <Form.Control type="text" value={`${product.price} $`} disabled />
+        <Form.Control type="text" value={`${formik.values.price} $`} disabled />
       </Form.Group>
       <Form.Group className="mb-3" controlId="salesAmount">
         <Form.Label>Sales amount</Form.Label>
         <Form.Control
           type="text"
-          value={`${formik.values.price * formik.values.pieces} $`}
+          value={`${formik.values.salesAmount} $`}
           disabled
         />
       </Form.Group>
@@ -191,14 +194,12 @@ finished with an abbreviation (like st. or rd.).
         <Form.Label>Tax</Form.Label>
         <Form.Control type="text" value={formik.values.tax} disabled />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicPassword">
+      <Form.Group className="mb-3" controlId="totalAfterTax">
         <Form.Label>Total After Tax</Form.Label>
         <Form.Control
           type="text"
-          value={`${
-            formik.values.price * formik.values.pieces +
-            formik.values.price * formik.values.pieces * (10 / 100)
-          } $`}
+          name="totalAfterTax"
+          value={formik.values.totalAfterTax}
           disabled
         />
       </Form.Group>
