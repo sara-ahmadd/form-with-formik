@@ -12,7 +12,7 @@ function FormComponent() {
   };
 
   const [totalCost, setTotalCost] = useState(
-    (product.tax / 100) * product.price + product.price
+    (product.tax / 100) * product.price * product.pieces + product.price
   );
   const [salesAmount, setSalesAmount] = useState(
     product.price * product.pieces
@@ -179,8 +179,15 @@ finished with an abbreviation (like st. or rd.).
           type="number"
           name="pieces"
           placeholder="ex. 3"
-          onChange={formik.handleChange}
           value={formik.values.pieces}
+          onChange={(e) => {
+            setSalesAmount(formik.values.price * e.target.value);
+            setTotalCost(
+              (formik.values.tax / 100) * formik.values.price * e.target.value +
+              formik.values.price * e.target.value
+              );
+              formik.handleChange(e);
+          }}
         />
         {formik.errors.pieces ? (
           <div className="text-danger fs-5 text-start">
