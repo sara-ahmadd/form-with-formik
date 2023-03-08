@@ -24,9 +24,9 @@ function PiecesField({ initialQuantity, getSalesAmount, xId }) {
         value={formik.values.pieces}
         onChange={(e) => {
           formik.handleChange(e);
+          getSalesAmount({ value: formik.values.pieces, id: xId })
         }}
       />
-      {getSalesAmount({ value: formik.values.pieces, id: xId })}
       {formik.errors.pieces && (
         <p className="text-danger fs-5 text-start">{formik.errors.pieces}</p>
       )}

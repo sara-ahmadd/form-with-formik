@@ -4,12 +4,8 @@ import PiecesField from "./PiecesField";
 import { CartContext } from "../App";
 import { TotalCostContext } from "./Form";
 
-function Cart() {
+function Cart({ handleTotalCost }) {
   const cart = useContext(CartContext);
-
-  const totalCost = useContext(TotalCostContext);
-
-  const [setTotalCost] = totalCost;
 
   const salesAmountOfProd = cart.map((x) => {
     return { value: x.pieces * x.price, id: x.id };
@@ -72,7 +68,7 @@ function Cart() {
                   getSalesAmount(x) +
                   (y.tax / 100) * getSalesAmount(y) +
                   getSalesAmount(y);
-                setTotalCost(cost);
+                handleTotalCost(cost);
                 return cost;
               })}
               $

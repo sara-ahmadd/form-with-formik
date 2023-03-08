@@ -3,7 +3,8 @@ import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
 import Cart from "./Cart";
 import * as Yup from "yup";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { CartContext } from "../App";
 
 export const TotalCostContext = React.createContext();
 
@@ -28,7 +29,25 @@ function FormComponent() {
       Number(dateArray[2]) >= now.getDate()
     );
   }
-  const [totalCost, setTotalCost] = useState(0);
+  const cart = useContext(CartContext);
+
+  /**
+   * get the total cost after taxex for all products
+   */
+  const productsCart = cart.reduce((x, y) => {
+    let cost =
+      (x.tax / 100) * x.price * x.pieces +
+      x.price * x.pieces +
+      (y.tax / 100) * y.price * y.pieces +
+      y.price * y.pieces;
+    return cost;
+  });
+
+  const [totalCost, setTotalCost] = useState(productsCart);
+
+  const handleTotalCost = (cost) => {
+    setTotalCost(cost);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -132,9 +151,7 @@ function FormComponent() {
         )}
       </Form.Group>
       <p className="fs-4 ">Products</p>
-      <TotalCostContext.Provider value={[setTotalCost]}>
-        <Cart />
-      </TotalCostContext.Provider>
+      <Cart handleTotalCost={handleTotalCost} />
       <Button variant="primary" type="submit">
         Submit
       </Button>
