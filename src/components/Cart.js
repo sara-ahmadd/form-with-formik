@@ -55,9 +55,10 @@ function Cart({ handleTotalCost }) {
                 />
               </td>
               <td>{x.tax} %</td>
-              <td>{getValue(salesAmount)} $</td>
+              <td>{x.id === salesAmount.id && getValue(salesAmount)} $</td>
               <td>
-                {(x.tax / 100) * getValue(salesAmount) + getValue(salesAmount)}{" "}
+                {x.id === salesAmount.id &&
+                  (x.tax / 100) * getValue(salesAmount) + getValue(salesAmount)}
                 $
               </td>
             </tr>
