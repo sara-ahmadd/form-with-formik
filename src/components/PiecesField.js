@@ -4,7 +4,7 @@ import { Form } from "react-bootstrap";
 import * as Yup from "yup";
 import { CartContext } from "../App";
 
-function PiecesField({ initialQuantity, getSalesAmount, xId }) {
+function PiecesField({ initialQuantity, handleSalesAmount, xId, price }) {
   const cart = useContext(CartContext);
 
   const formik = useFormik({
@@ -24,7 +24,8 @@ function PiecesField({ initialQuantity, getSalesAmount, xId }) {
         value={formik.values.pieces}
         onChange={(e) => {
           formik.handleChange(e);
-          getSalesAmount({ value: formik.values.pieces, id: xId })
+          handleSalesAmount({ value: formik.values.pieces * price, id: xId });
+          console.log({ value: formik.values.pieces * price, id: xId });
         }}
       />
       {formik.errors.pieces && (

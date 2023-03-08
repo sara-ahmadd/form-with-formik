@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import Table from "react-bootstrap/Table";
 import PiecesField from "./PiecesField";
 import { CartContext } from "../App";
-import { TotalCostContext } from "./Form";
 
 function Cart({ handleTotalCost }) {
   const cart = useContext(CartContext);
@@ -11,15 +10,18 @@ function Cart({ handleTotalCost }) {
     return { value: x.pieces * x.price, id: x.id };
   });
 
-  const getSalesAmount = (x) => {
-    return (
-      salesAmountOfProd.find((y) => y.id === x.id) &&
-      salesAmountOfProd.find((y) => y.id === x.id).value
-    );
+  const [salesAmount, setSalesAmount] = useState({
+    value: cart[0].pieces * cart[0].price,
+    id: cart[0].id,
+  });
+
+  const getValue = (x) => {
+    return salesAmountOfProd.find((y) => y.id === x.id) && x.value;
   };
 
-  // console.log(salesAmountOfProd.find((y) => y.id === 3345).value);
-
+  const handleSalesAmount = (x) => {
+    setSalesAmount(x);
+  };
   return (
     <Table striped bordered hover>
       <thead>
@@ -49,12 +51,15 @@ function Cart({ handleTotalCost }) {
                   initialQuantity={x.pieces}
                   price={x.price}
                   xId={x.id}
-                  getSalesAmount={getSalesAmount}
+                  handleSalesAmount={handleSalesAmount}
                 />
               </td>
               <td>{x.tax} %</td>
-              <td>{getSalesAmount(x)} $</td>
-              <td>{(x.tax / 100) * getSalesAmount(x) + getSalesAmount(x)} $</td>
+              <td>{getValue(salesAmount)} $</td>
+              <td>
+                {(x.tax / 100) * getValue(salesAmount) + getValue(salesAmount)}{" "}
+                $
+              </td>
             </tr>
           );
         })}
@@ -64,11 +69,14 @@ function Cart({ handleTotalCost }) {
             <span className="fs-3 px-4">
               {cart.reduce((x, y) => {
                 let cost =
-                  (x.tax / 100) * getSalesAmount(x) +
-                  getSalesAmount(x) +
-                  (y.tax / 100) * getSalesAmount(y) +
-                  getSalesAmount(y);
+                  (x.tax / 100) *
+                    getValue({ value: x.pieces * x.price, id: x.id }) +
+                  getValue({ value: x.pieces * x.price, id: x.id }) +
+                  (y.tax / 100) *
+                    getValue({ value: y.pieces * y.price, id: y.id }) +
+                  getValue({ value: y.pieces * y.price, id: y.id });
                 handleTotalCost(cost);
+                console.log(cost);
                 return cost;
               })}
               $

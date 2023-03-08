@@ -32,22 +32,21 @@ function FormComponent() {
   const cart = useContext(CartContext);
 
   /**
-   * get the total cost after taxex for all products
+   * get the initial value of the total cost after taxes for all products
    */
-  const productsCart = cart.reduce((x, y) => {
-    let cost =
+  const productsCart = cart.reduce(
+    (x, y) =>
       (x.tax / 100) * x.price * x.pieces +
       x.price * x.pieces +
       (y.tax / 100) * y.price * y.pieces +
-      y.price * y.pieces;
-    return cost;
-  });
-
+      y.price * y.pieces
+  );
   const [totalCost, setTotalCost] = useState(productsCart);
 
   const handleTotalCost = (cost) => {
     setTotalCost(cost);
   };
+  console.log(totalCost);
 
   const formik = useFormik({
     initialValues: {
