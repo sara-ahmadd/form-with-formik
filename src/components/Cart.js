@@ -33,7 +33,7 @@ function Cart({ handleTotalCost }) {
           <th>Pieces</th>
           <th>Tax</th>
           <th>Sales amount</th>
-          <th>Total after tax</th>
+          <th>Value after tax</th>
         </tr>
       </thead>
       <tbody>
@@ -55,10 +55,11 @@ function Cart({ handleTotalCost }) {
                 />
               </td>
               <td>{x.tax} %</td>
-              <td>{x.id === salesAmount.id && getValue(salesAmount)} $</td>
+              <td>{x.id === salesAmount.id && { ...salesAmount }.value} $</td>
               <td>
                 {x.id === salesAmount.id &&
-                  (x.tax / 100) * getValue(salesAmount) + getValue(salesAmount)}
+                  (x.tax / 100) * { ...salesAmount }.value +
+                    { ...salesAmount }.value}
                 $
               </td>
             </tr>
@@ -70,12 +71,10 @@ function Cart({ handleTotalCost }) {
             <span className="fs-3 px-4">
               {cart.reduce((x, y) => {
                 let cost =
-                  (x.tax / 100) *
-                    getValue({ value: x.pieces * x.price, id: x.id }) +
-                  getValue({ value: x.pieces * x.price, id: x.id }) +
-                  (y.tax / 100) *
-                    getValue({ value: y.pieces * y.price, id: y.id }) +
-                  getValue({ value: y.pieces * y.price, id: y.id });
+                  (x.tax / 100) * x.pieces * x.price +
+                  x.pieces * x.price +
+                  (y.tax / 100) * y.pieces * y.price +
+                  y.pieces * y.price;
                 handleTotalCost(cost);
                 console.log(cost);
                 return cost;
