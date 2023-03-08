@@ -6,10 +6,6 @@ import { CartContext } from "../App";
 function Cart({ handleTotalCost }) {
   const cart = useContext(CartContext);
 
-  const salesAmountOfProd = cart.map((x) => {
-    return { value: x.pieces * x.price, id: x.id };
-  });
-
   const [salesAmount, setSalesAmount] = useState({
     value: cart[0].pieces * cart[0].price,
     id: cart[0].id,
@@ -18,7 +14,7 @@ function Cart({ handleTotalCost }) {
   const handleSalesAmount = (x) => {
     setSalesAmount(x);
   };
-  let result = [];
+  let result;
   return (
     <Table striped bordered hover>
       <thead>
