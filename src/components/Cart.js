@@ -1,27 +1,28 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Table from "react-bootstrap/Table";
 import PiecesField from "./PiecesField";
+import { CartContext } from "../App";
+import { TotalCostContext } from "./Form";
+
 function Cart() {
-  let cart = [
-    {
-      id: 678,
-      name: "T-shirt",
-      price: 122,
-      tax: 10,
-      pieces: 1,
-      image:
-        "https://cdn.pixabay.com/photo/2016/12/06/09/30/blank-1886001__340.png",
-    },
-    {
-      id: 3345,
-      name: "Head Phones",
-      price: 143,
-      tax: 10,
-      pieces: 1,
-      image:
-        "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGhlYWRwaG9uZXN8ZW58MHx8MHx8&w=1000&q=80",
-    },
-  ];
+  const cart = useContext(CartContext);
+
+  const totalCost = useContext(TotalCostContext);
+
+  const [setTotalCost] = totalCost;
+
+  const salesAmountOfProd = cart.map((x) => {
+    return { value: x.pieces * x.price, id: x.id };
+  });
+
+  const getSalesAmount = (x) => {
+    return (
+      salesAmountOfProd.find((y) => y.id === x.id) &&
+      salesAmountOfProd.find((y) => y.id === x.id).value
+    );
+  };
+
+  // console.log(salesAmountOfProd.find((y) => y.id === 3345).value);
 
   return (
     <Table striped bordered hover>
@@ -48,25 +49,34 @@ function Cart() {
               </td>
               <td>{x.price}</td>
               <td>
-                <PiecesField initialQuantity={x.pieces} />
+                <PiecesField
+                  initialQuantity={x.pieces}
+                  price={x.price}
+                  xId={x.id}
+                  getSalesAmount={getSalesAmount}
+                />
               </td>
               <td>{x.tax} %</td>
-              <td>{x.price * x.pieces} $</td>
-              <td>{(x.tax / 100) * x.price * x.pieces + x.price} $</td>
+              <td>{getSalesAmount(x)} $</td>
+              <td>{(x.tax / 100) * getSalesAmount(x) + getSalesAmount(x)} $</td>
             </tr>
           );
         })}
         <tr>
-          <td colSpan={2}>
-            Total :
-            {cart.reduce(
-              (x, y) =>
-                (x.tax / 100) * x.price * x.pieces +
-                x.price +
-                (y.tax / 100) * y.price * y.pieces +
-                y.price
-            )}
-            $
+          <td colSpan={8}>
+            <span className="fs-3 px-4">Total</span> :
+            <span className="fs-3 px-4">
+              {cart.reduce((x, y) => {
+                let cost =
+                  (x.tax / 100) * getSalesAmount(x) +
+                  getSalesAmount(x) +
+                  (y.tax / 100) * getSalesAmount(y) +
+                  getSalesAmount(y);
+                setTotalCost(cost);
+                return cost;
+              })}
+              $
+            </span>
           </td>
         </tr>
       </tbody>

@@ -3,6 +3,9 @@ import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
 import Cart from "./Cart";
 import * as Yup from "yup";
+import React, { useState } from "react";
+
+export const TotalCostContext = React.createContext();
 
 function FormComponent() {
   let user = {
@@ -25,6 +28,7 @@ function FormComponent() {
       Number(dateArray[2]) >= now.getDate()
     );
   }
+  const [totalCost, setTotalCost] = useState(0);
 
   const formik = useFormik({
     initialValues: {
@@ -35,6 +39,7 @@ function FormComponent() {
       date: `${year}-${month >= 10 ? month : `0${month}`}-${
         day >= 10 ? day : `0${day}`
       }`,
+      cost: totalCost,
     },
     validationSchema: Yup.object({
       adress: Yup.string().label("253 N. Cherry St.").required(),
@@ -127,7 +132,9 @@ function FormComponent() {
         )}
       </Form.Group>
       <p className="fs-4 ">Products</p>
-      <Cart />
+      <TotalCostContext.Provider value={[setTotalCost]}>
+        <Cart />
+      </TotalCostContext.Provider>
       <Button variant="primary" type="submit">
         Submit
       </Button>

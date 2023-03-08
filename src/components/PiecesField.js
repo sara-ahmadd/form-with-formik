@@ -1,9 +1,12 @@
 import { useFormik } from "formik";
-import React from "react";
+import React, { useContext } from "react";
 import { Form } from "react-bootstrap";
 import * as Yup from "yup";
+import { CartContext } from "../App";
 
-function PiecesField({ initialQuantity }) {
+function PiecesField({ initialQuantity, getSalesAmount, xId }) {
+  const cart = useContext(CartContext);
+
   const formik = useFormik({
     initialValues: {
       pieces: initialQuantity,
@@ -19,8 +22,11 @@ function PiecesField({ initialQuantity }) {
         type="number"
         name="pieces"
         value={formik.values.pieces}
-        onChange={formik.handleChange}
+        onChange={(e) => {
+          formik.handleChange(e);
+        }}
       />
+      {getSalesAmount({ value: formik.values.pieces, id: xId })}
       {formik.errors.pieces && (
         <p className="text-danger fs-5 text-start">{formik.errors.pieces}</p>
       )}
