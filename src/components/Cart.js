@@ -15,10 +15,10 @@ function Cart({ handleTotalCost }) {
     id: cart[0].id,
   });
 
-
   const handleSalesAmount = (x) => {
     setSalesAmount(x);
   };
+  let result = [];
   return (
     <Table striped bordered hover>
       <thead>
@@ -66,16 +66,12 @@ function Cart({ handleTotalCost }) {
           <td colSpan={8}>
             <span className="fs-3 px-4">Total</span> :
             <span className="fs-3 px-4">
-              {cart.reduce((x, y) => {
-                let cost =
-                  (x.tax / 100) * x.pieces * x.price +
-                  x.pieces * x.price +
-                  (y.tax / 100) * y.pieces * y.price +
-                  y.pieces * y.price;
-                handleTotalCost(cost);
-                console.log(cost);
-                return cost;
-              })}
+              {cart
+                .map(
+                  (product) =>
+                    (product.tax / 100) * salesAmount.value + salesAmount.value
+                )
+                .reduce((x, y) => x + y, 0)}
               $
             </span>
           </td>

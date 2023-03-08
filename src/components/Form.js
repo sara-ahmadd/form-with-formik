@@ -46,7 +46,6 @@ function FormComponent() {
   const handleTotalCost = (cost) => {
     setTotalCost(cost);
   };
-  console.log(totalCost);
 
   const formik = useFormik({
     initialValues: {
@@ -83,7 +82,10 @@ function FormComponent() {
   });
 
   return (
-    <Form className="w-75 mx-auto my-2 p-4" onSubmit={formik.handleSubmit}>
+    <Form
+      className="w-sm-100  w-75 mx-auto my-2 p-4"
+      onSubmit={formik.handleSubmit}
+    >
       <Form.Group className="mb-3" controlId="userName">
         <Form.Label>User name</Form.Label>
         <Form.Control
