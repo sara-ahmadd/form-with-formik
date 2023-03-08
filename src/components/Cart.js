@@ -15,9 +15,6 @@ function Cart({ handleTotalCost }) {
     id: cart[0].id,
   });
 
-  const getValue = (x) => {
-    return salesAmountOfProd.find((y) => y.id === x.id) && x.value;
-  };
 
   const handleSalesAmount = (x) => {
     setSalesAmount(x);
